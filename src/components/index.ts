@@ -1,7 +1,7 @@
-import MenuList from './MenuList.vue'
+import SideMenu from './SideMenu.vue'
 import NineSquare from './NineSquare.vue'
 
 export {
-  MenuList,
+  SideMenu,
   NineSquare
 }
