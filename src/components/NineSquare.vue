@@ -9,12 +9,53 @@
     ]"
   >
     <div class="square-bg" :class="{ 'an-shine': n === 3 || n === 5 || n === 9 }"></div>
-    <div v-if="n === 1 || n === 3 || n === 7 || n === 9" class="ball">B</div>
+    <div
+      v-if="n === 1 || n === 3 || n === 7 || n === 9"
+      ref="balls"
+      class="ball"
+      :class="[getBallClass(n), `ball-${n}`]"
+    >B</div>
   </div>
 </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { toRefs, reactive, watch } from 'vue'
+
+const props = defineProps({
+  ballAnModeIsNormal: {
+    type: Boolean,
+    defalut: true
+  },
+  isJSAnimation: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const { ballAnModeIsNormal, isJSAnimation } = toRefs(props)
+const getBallClass = (n: number) => ballAnModeIsNormal.value ? '' : `moveToCenter-${n}`
+
+const balls = reactive([]) as Array<HTMLElement>
+const useJSAnimation = (val: boolean) => {
+  balls.forEach((item: any) => {
+    const getAnBallNum: number = item.className.split("-")[1]
+
+    if (val) {
+      console.log("true item", item.classList)
+      item.classList.add(`moveToCenter-${getAnBallNum}`)
+    } else {
+      item.classList.remove(`moveToCenter-1`)
+      item.classList.remove(`moveToCenter-3`)
+      item.classList.remove(`moveToCenter-7`)
+      item.classList.remove(`moveToCenter-9`)
+    }
+  })
+}
+
+watch(isJSAnimation, (val) => useJSAnimation(val))
+
+</script>
 
 <style scoped>
 @media (min-width: 390px) {
@@ -91,6 +132,55 @@
   100% {
     transform: translateX(100vw);
   }
+}
+
+@keyframes moveToCenter-1 {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(calc(33.8333vw - 15px), calc(33.8333vw - 15px));
+  }
+}
+@keyframes moveToCenter-3 {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(calc(-33.8333vw - 15px), calc(33.8333vw - 15px));
+  }
+}
+@keyframes moveToCenter-7 {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(calc(33.8333vw - 15px), calc(-33.8333vw - 15px));
+  }
+}
+@keyframes moveToCenter-9 {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(calc(-33.8333vw - 15px), calc(-33.8333vw - 15px));
+  }
+}
+
+.moveToCenter-1 {
+  animation: moveToCenter-1 3s both infinite;
+}
+
+.moveToCenter-3 {
+  animation: moveToCenter-3 3s both infinite;
+}
+
+.moveToCenter-7 {
+  animation: moveToCenter-7 3s both infinite;
+}
+
+.moveToCenter-9 {
+  animation: moveToCenter-9 3s both infinite;
 }
 
 </style>
