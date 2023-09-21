@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, reactive, watch } from 'vue'
+import { toRefs, watch } from 'vue'
 
 const props = defineProps({
   ballAnModeIsNormal: {
@@ -36,13 +36,16 @@ const props = defineProps({
 const { ballAnModeIsNormal, isJSAnimation } = toRefs(props)
 const getBallClass = (n: number) => ballAnModeIsNormal.value ? '' : `moveToCenter-${n}`
 
-const balls = reactive([]) as Array<HTMLElement>
+// const balls = reactive([]) as Array<HTMLElement>
 const useJSAnimation = (val: boolean) => {
-  balls.forEach((item: any) => {
-    const getAnBallNum: number = item.className.split("-")[1]
+  // console.log("balls", balls)
 
+  const newBalls = document.querySelectorAll(".ball")
+
+  newBalls.forEach((item: any) => {
+    const getAnBallNum: number = item.className.split("-")[1]
+    
     if (val) {
-      console.log("true item", item.classList)
       item.classList.add(`moveToCenter-${getAnBallNum}`)
     } else {
       item.classList.remove(`moveToCenter-1`)
