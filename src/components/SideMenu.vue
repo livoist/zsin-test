@@ -2,15 +2,24 @@
 <div class="menu" :class="{ 'isOpenMenu': isOpenMenu }">
   <div class="menu-bg"></div>
   <div class="menu-list">
-    <List v-for="item in list" :item="item" />
+    <List
+      v-for="item in list"
+      :item="item"
+      :path="path"
+      @pathKey="getPath"
+    />
   </div>
 </div>
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue'
+import { toRefs, reactive } from 'vue'
 import List from './List.vue'
 import { type ListItem } from '../type'
+// import { useMenuListStore } from '../store'
+
+// const lister = useMenuListStore()
+// console.log("lister", lister)
 
 const props = defineProps({
   isOpenMenu: {
@@ -23,7 +32,28 @@ const props = defineProps({
   }
 })
 
+let path = reactive([]) as Array<string>
+
+const getPath = (val: string) => {
+  path.push(val)
+  // console.log("root path", path)
+}
+
+const flatDataList = reactive([]) as Array<{ key: string, text: string }>
+
 const { isOpenMenu, list } = toRefs(props)
+const generateList = (data: Array<ListItem>) => {
+  for (let i = 0; i < data.length; i++) {
+    const node = data[i]
+    const key = node.key
+
+    flatDataList.push({ key: key, text: node.text })
+    if (node.children) {
+      generateList(node.children)
+    }
+  }
+}
+generateList(list.value)
 
 </script>
 
